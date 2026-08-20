@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#b3261e" />
+  <meta name="description" content="Offline-first family emergency information, always on your phone." />
+
+  <title>Emergency</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Emergency" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Lock screen: covers the whole app until unlocked. Visible by default so
+       the app is never shown before authentication. -->
+  <div id="lock" class="lock" role="dialog" aria-modal="true" aria-labelledby="lock-title">
+    <form id="lock-form" class="lock__card" autocomplete="off">
+      <div class="lock__logo" aria-hidden="true">＋</div>
+      <h1 id="lock-title" class="lock__title">Enter PIN</h1>
+      <p id="lock-sub" class="lock__sub"></p>
+
+      <input id="lock-pin" class="lock__pin" type="password" inputmode="numeric"
+             pattern="[0-9]*" placeholder="PIN" autocomplete="off" aria-label="PIN" />
+      <input id="lock-pin2" class="lock__pin" type="password" inputmode="numeric"
+             pattern="[0-9]*" placeholder="Confirm PIN" autocomplete="off"
+             aria-label="Confirm PIN" hidden />
+
+      <p id="lock-error" class="lock__error" role="alert"></p>
+
+      <button id="lock-submit" class="btn btn--primary lock__submit" type="submit">Unlock</button>
+      <button id="lock-bio" class="btn lock__bio" type="button" hidden></button>
+
+      <label id="lock-enroll-row" class="lock__enroll" hidden>
+        <input id="lock-enroll" type="checkbox" />
+        <span>Enable biometric unlock</span>
+      </label>
+    </form>
+  </div>
+
+  <div class="app" id="app">
+    <!-- Top bar -->
+    <header class="topbar">
+      <h1 id="view-title" class="topbar__title">Family</h1>
+      <div class="topbar__actions">
+        <button id="settings-open" class="topbar__icon" type="button" aria-label="Settings & backup" title="Settings">⚙️</button>
+        <button id="lock-now" class="topbar__icon" type="button" aria-label="Lock app" title="Lock">🔒</button>
+      </div>
+    </header>
+
+    <!-- View container: one <section> per tab, only the active one is shown -->
+    <main class="views">
+      <section class="view" id="view-family" data-view="family" aria-hidden="false">
+        <div id="family-root"></div>
+      </section>
+
+      <section class="view" id="view-contacts" data-view="contacts" hidden aria-hidden="true">
+        <div id="contacts-root"></div>
+      </section>
+
+      <section class="view" id="view-insurer" data-view="insurer" hidden aria-hidden="true">
+        <div id="insurer-root"></div>
+      </section>
+
+      <section class="view" id="view-hospitals" data-view="hospitals" hidden aria-hidden="true">
+        <div id="hospitals-root"></div>
+      </section>
+    </main>
+
+    <!-- Document viewer overlay (hidden until a document is opened) -->
+    <div id="viewer" class="viewer" hidden role="dialog" aria-modal="true" aria-label="Document viewer">
+      <div class="viewer__bar">
+        <span id="viewer-title" class="viewer__title"></span>
+        <button id="viewer-close" class="viewer__close" type="button" aria-label="Close">✕</button>
+      </div>
+      <div id="viewer-body" class="viewer__body"></div>
+    </div>
+
+    <!-- Always-on ambulance quick-dial: reachable in one thumb tap from any
+         tab, sits just above the tab bar on the right (thumb zone). -->
+    <a id="fab-ambulance" class="fab" href="tel:108" aria-label="Call ambulance, 108">
+      <span class="fab__icon" aria-hidden="true">🚑</span>
+      <span class="fab__label">Ambulance<br><strong>108</strong></span>
+    </a>
+
+    <!-- Settings / backup sheet -->
+    <div id="settings" class="sheet" hidden role="dialog" aria-modal="true" aria-label="Settings">
+      <div class="sheet__backdrop" data-close></div>
+      <div class="sheet__panel" role="document">
+        <div id="settings-body"></div>
+      </div>
+    </div>
+
+    <!-- Bottom tab bar -->
+    <nav class="tabbar" role="tablist" aria-label="Main">
+      <button class="tab is-active" role="tab" aria-selected="true" data-tab="family">
+        <span class="tab__icon" aria-hidden="true">👪</span>
+        <span class="tab__label">Family</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="contacts">
+        <span class="tab__icon" aria-hidden="true">📞</span>
+        <span class="tab__label">Contacts</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="insurer">
+        <span class="tab__icon" aria-hidden="true">🪪</span>
+        <span class="tab__label">Insurer</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="hospitals">
+        <span class="tab__icon" aria-hidden="true">🏥</span>
+        <span class="tab__label">Hospitals</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="db.js"></script>
+  <script src="security.js"></script>
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+  <script src="family.js"></script>
+  <script src="contacts.js"></script>
+  <script src="insurer.js"></script>
+  <script src="hospitals.js"></script>
+  <script src="backup.js"></script>
+</body>
+</html>
